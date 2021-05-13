@@ -9,6 +9,7 @@ type Reader struct {
 	bits []int
 }
 
+// NewReader returns a new Reader
 func NewReader(input []byte) *Reader {
 	bits := bytesToBits(input)
 	return &Reader{
@@ -16,6 +17,7 @@ func NewReader(input []byte) *Reader {
 	}
 }
 
+// SliceToInt reads length bits from offset and returns them
 func (r *Reader) SliceToInt(offset int, length int) (int, error) {
 	if len(r.bits) < offset+length {
 		return 0, errors.New("invalid offset and length value")
