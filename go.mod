@@ -1,3 +1,3 @@
-module bitreader
+module github.com/looocusio/bitreader
 
-go 1.15
+go 1.17

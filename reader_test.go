@@ -1,10 +1,11 @@
 package bitreader_test
 
 import (
-	"bitreader"
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/looocusio/bitreader"
 )
 
 func ExampleReader_SliceToInt() {
@@ -25,14 +26,14 @@ func TestNewReader(t *testing.T) {
 	tests := []struct {
 		name     string
 		args     args
-		wantBits []int
+		wantBits []uint8
 	}{
 		{
 			name: "success",
 			args: args{
 				input: []byte{3, 255},
 			},
-			wantBits: []int{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+			wantBits: []uint8{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		},
 	}
 	for _, tt := range tests {
@@ -46,23 +47,23 @@ func TestNewReader(t *testing.T) {
 
 func TestReader_SliceToInt(t *testing.T) {
 	type fields struct {
-		bits []int
+		bits []uint8
 	}
 	type args struct {
-		offset int
-		length int
+		offset uint64
+		length uint64
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    int
+		want    uint64
 		wantErr bool
 	}{
 		{
 			name: "success from 0",
 			fields: fields{
-				bits: []int{1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0},
+				bits: []uint8{1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0},
 			},
 			args: args{
 				offset: 0,
@@ -74,7 +75,7 @@ func TestReader_SliceToInt(t *testing.T) {
 		{
 			name: "success from offset",
 			fields: fields{
-				bits: []int{1, 0, 1, 1, 0, 1, 0, 1, 1, 0},
+				bits: []uint8{1, 0, 1, 1, 0, 1, 0, 1, 1, 0},
 			},
 			args: args{
 				offset: 2,
@@ -86,11 +87,66 @@ func TestReader_SliceToInt(t *testing.T) {
 		{
 			name: "failed invalid offset and length",
 			fields: fields{
-				bits: []int{1, 0, 1, 1, 0, 1, 0},
+				bits: []uint8{1, 0, 1, 1, 0, 1, 0},
 			},
 			args: args{
 				offset: 0,
 				length: 8,
+			},
+			want:    0,
+			wantErr: true,
+		},
+		{
+			name: "failed empty bits",
+			fields: fields{
+				bits: []uint8{},
+			},
+			args: args{
+				offset: 0,
+				length: 8,
+			},
+			want:    0,
+			wantErr: true,
+		},
+		{
+			name: "success 64bit",
+			fields: fields{
+				bits: []uint8{
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+				},
+			},
+			args: args{
+				offset: 0,
+				length: 64,
+			},
+			want:    18446744073709551615,
+			wantErr: false,
+		},
+		{
+			name: "failed 65bit",
+			fields: fields{
+				bits: []uint8{
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1, 1, 1, 1, 1, 1, 1, 1,
+					1,
+				},
+			},
+			args: args{
+				offset: 0,
+				length: 65,
 			},
 			want:    0,
 			wantErr: true,
