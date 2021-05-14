@@ -14,7 +14,7 @@ go get github.com/looocusio/bitreader
 
 ```go
 import (
-   	"fmt"
+    "fmt"
 
     "github.com/looocusio/bitreader"
 )
