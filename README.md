@@ -1,6 +1,7 @@
 # bitreader
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/looocusio/bitreader.svg)](https://pkg.go.dev/github.com/looocusio/bitreader)
+[![Go Report Card](https://goreportcard.com/badge/github.com/looocusio/bitreader)](https://goreportcard.com/report/github.com/looocusio/bitreader)
 
 Bitreader is Golang library for reading bit with offset and length.
 
