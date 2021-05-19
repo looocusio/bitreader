@@ -35,7 +35,3 @@ func main() {
 ## Contributing
 
 Contributions are welcome.
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
